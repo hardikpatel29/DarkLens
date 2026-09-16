@@ -1,0 +1,54 @@
+[project]
+name = "darklens"
+version = "0.1.0"
+description = "Explainable AI framework for automated detection, analysis and reporting of dark patterns on websites."
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.32",
+    "pydantic>=2.9",
+    "pydantic-settings>=2.6",
+    "playwright>=1.48",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3",
+    "pytest-asyncio>=0.24",
+    "httpx>=0.27",
+    "ruff>=0.7",
+    "mypy>=1.13",
+]
+# Phase 2 (NLP classifier) — kept optional so Phase 1 install stays light.
+nlp = ["torch>=2.4", "transformers>=4.45", "scikit-learn>=1.5", "datasets>=3.0", "pandas>=2.2"]
+# Phase 4 (CV detector + OCR) — kept optional for the same reason.
+cv = ["ultralytics>=8.3", "opencv-python-headless>=4.10", "easyocr>=1.7", "pillow>=10.4", "numpy>=1.26", "pyyaml>=6.0"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/darklens"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+# UP042: ruff suggests `enum.StrEnum` over `class Foo(str, Enum)`. Deliberately
+# ignored — `StrEnum.__str__` returns the bare value ("high"), while
+# `(str, Enum).__str__` returns "Severity.HIGH". Several call sites here rely
+# on f-string interpolation of severity/category values for log messages and
+# report text where the qualified form is not what we want. Not a lint gap,
+# a considered choice — revisit only if all call sites are audited together.
+ignore = ["UP042"]
+
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true

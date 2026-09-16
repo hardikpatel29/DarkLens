@@ -1,0 +1,18 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+*.egg-info/
+data/
+models/
+docs/benchmark_results.json
+.env
+.venv/
+venv/
+
+# Root-level dataset (belongs in data/ or an external store, not in git)
+dark-patterns-v2.csv
+
+# Internal utility — generates the Colab notebook, not useful to repo consumers
+scripts/_make_colab_nb.py
